@@ -7,6 +7,14 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-RLM9VCQ389"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-RLM9VCQ389');
+    </script>
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -59,7 +67,7 @@
                     <div class="lg:w-1/3 flex flex-col gap-4">
                         <h2 class="text-lg sm:text-xl font-semibold mb-2">1. Paste Timetable Data</h2>
                         <p class="text-xs text-gray-500 mb-2">Go to: <a href="https://selfservice.twc.edu.hk/PowerCampusSelfService/Registration/Schedule" target="_blank" class="text-blue-600 hover:underline">Self-Service</a> > List mode > Ctrl+A > Ctrl+C > Paste below</p>
-                        <textarea id="timetable-data" rows="10" class="w-full p-3 border border-gray-300 rounded-lg bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" placeholder="Paste your raw timetable data here..."></textarea>
+                        <textarea id="timetable-data" rows="10" class="w-full p-3 border border-gray-300 rounded-lg bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition text-gray-400"></textarea>
                         <button id="generate-btn" class="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-transform transform hover:scale-105">
                             Generate Timetable
                         </button>
@@ -157,7 +165,7 @@
             </div>
             
             <footer class="text-center mt-8 text-sm text-gray-500">
-                <p>&copy; David Cheng</p>
+                <p>&copy; David Cheng | Contact: twccredittransfer@gmail.com</p>
             </footer>
         </div>
 
@@ -180,6 +188,75 @@
             const timeRangeControls = document.getElementById('time-range-controls');
             const startTimeSelect = document.getElementById('start-time');
             const endTimeSelect = document.getElementById('end-time');
+
+            // Sample data that acts as a placeholder
+            const placeholderData = `
+Course Title: Imaging Anatomy | Credits: 0.0 | Credit type: Letter Grade
+10:00 - 11:50
+FRI
+Tung Wah College, King's Park Campus, KPC-907(9/F)
+REGISTERED
+
+Course Title: Imaging Anatomy | Credits: 3.0 | Credit type: Letter Grade
+17:00 - 18:50
+FRI
+Tung Wah College, Mong Kok Campus, MKA-HCLT(2/F)
+REGISTERED
+
+Course Title: Radiation Physics | Credits: 3.0 | Credit type: Letter Grade
+15:00 - 16:50
+TUE
+Tung Wah College, Mong Kok Campus, MKA-801(8/F)
+REGISTERED
+
+Course Title: Radiation Physics | Credits: 0.0 | Credit type: Letter Grade
+17:00 - 17:50
+TUE
+Tung Wah College, Mong Kok Campus, MKA-801(8/F)
+REGISTERED
+
+Course Title: Medical Imaging Instrumentation | Credits: 3.0 | Credit type: Letter Grade
+18:00 - 20:50
+THU
+Tung Wah College, Mong Kok Campus, MKA-501(5/F)
+REGISTERED
+
+Course Title: Medical Imaging Instrumentation | Credits: 0.0 | Credit type: Letter Grade
+12:00 - 13:50
+WED
+Tung Wah College, King's Park Campus, KPC-1101(11/F)
+REGISTERED
+
+Course Title: General Pathology | Credits: 3.0 | Credit type: Letter Grade
+14:00 - 15:50
+FRI
+Tung Wah College, Mong Kok Campus, MKA-HCLT(2/F)
+REGISTERED
+
+Course Title: General Pathology | Credits: 0.0 | Credit type: Letter Grade
+16:00 - 16:50
+FRI
+Tung Wah College, Mong Kok Campus, MKA-801(8/F)
+REGISTERED
+
+Course Title: General Pathology | Credits: 0.0 | Credit type: Letter Grade
+14:00 - 16:50
+MON
+Tung Wah College, King's Park Campus, KPC-130506(13/F)
+REGISTERED
+
+Course Title: Introduction to Statistics | Credits: 0.0 | Credit type: Letter Grade
+15:00 - 16:50
+THU
+Tung Wah College, King's Park Campus, KPC-905(9/F)
+REGISTERED
+
+Course Title: Introduction to Statistics | Credits: 3.0 | Credit type: Letter Grade
+18:00 - 18:50
+MON
+Tung Wah College, Mong Kok Campus, MKB-201(2/F)
+REGISTERED
+        `;
 
             // State
             let parsedCourses = [];
@@ -379,8 +456,8 @@
                      wrapper.style.minWidth = '720px';
                 }
                 
-                let headerHtml = `<div class="grid sticky top-0 ${headerBg} ${textColor} z-20" style="${gridTemplateColumns}">`;
-                headerHtml += `<div class="p-2 font-semibold text-center ${borderColor}">Time</div>`;
+                let headerHtml = `<div class="grid sticky top-0 ${headerBg} ${textColor} z-20 border-b ${borderColor}" style="${gridTemplateColumns}">`;
+                headerHtml += `<div class="p-2 font-semibold text-center ${borderColor} border-r">Time</div>`;
                 days.forEach(day => {
                     headerHtml += `<div class="p-2 font-semibold text-center border-l ${borderColor}">${day}</div>`;
                 });
@@ -388,9 +465,9 @@
 
                 let bodyHtml = `<div class="relative grid" style="${gridTemplateColumns} height: ${(maxHour - minHour) * hourHeight}px;">`;
 
-                bodyHtml += `<div>`;
+                bodyHtml += `<div class="relative">`;
                 for (let hour = minHour; hour < maxHour; hour++) {
-                    bodyHtml += `<div class="text-center text-sm ${timeColor} pt-1" style="height: ${hourHeight}px;">${hour.toString().padStart(2, '0')}:00</div>`;
+                    bodyHtml += `<div class="text-center text-sm ${timeColor} pt-1 border-r ${borderColor}" style="height: ${hourHeight}px;">${hour.toString().padStart(2, '0')}:00</div>`;
                 }
                 bodyHtml += '</div>';
 
@@ -399,9 +476,9 @@
                 });
                 
                 for (let hour = minHour; hour < maxHour; hour++) {
-                    bodyHtml += `<div class="absolute left-0 right-0 border-b border-dashed ${borderColor} z-0" style="top: ${(hour - minHour + 1) * hourHeight}px; grid-column: 1 / -1;"></div>`;
+                    bodyHtml += `<div class="absolute left-0 right-0 border-b border-dashed ${borderColor} z-0" style="top: ${(hour - minHour) * hourHeight}px; grid-column: 1 / -1;"></div>`;
                 }
-
+                
                 bodyHtml += '</div>';
                 timetableContainer.innerHTML = headerHtml + bodyHtml;
 
@@ -413,6 +490,7 @@
                     const [endH_orig, endM_orig] = course.endTime.split(':').map(Number);
 
                     // Calculate height based on rounding up to the next full hour
+                    // THIS IS THE MODIFIED LOGIC
                     const endH_rounded = endM_orig > 0 ? endH_orig + 1 : endH_orig;
                     const top = ((startH - minHour) * 60 + startM) / 60 * hourHeight;
                     const durationMinutes = (endH_rounded * 60) - (startH * 60 + startM);
@@ -422,7 +500,7 @@
 
                     const courseBlock = document.createElement('div');
                     courseBlock.className = 'absolute w-full p-2 rounded-lg border text-xs overflow-hidden flex flex-col items-center justify-center z-10';
-                    courseBlock.style.top = `${top}px`;
+                    courseBlock.style.top = `${top + 1}px`; // +1 to prevent border overlap
                     courseBlock.style.height = `${height - 2}px`;
                     courseBlock.style.left = '0px';
                     
@@ -498,7 +576,13 @@
             
             // --- Event Listeners ---
             generateBtn.addEventListener('click', () => {
-                parsedCourses = parseTimetableData(dataInput.value);
+                let dataToParse = dataInput.value.trim();
+                // If the input is empty or contains only whitespace, use the placeholder data
+                if (dataToParse === '' || dataInput.classList.contains('text-gray-400')) {
+                    dataToParse = placeholderData;
+                }
+
+                parsedCourses = parseTimetableData(dataToParse);
                 setupCustomColorPickers();
                 setupAdditionalInfoInputs();
                 customColorsContainer.classList.toggle('hidden', colorPaletteSelect.value !== 'custom');
@@ -561,7 +645,12 @@
 
             // Update listeners for instant rendering
             colorPaletteSelect.addEventListener('change', () => {
-                customColorsContainer.classList.toggle('hidden', colorPaletteSelect.value !== 'custom');
+                const isCustom = colorPaletteSelect.value === 'custom';
+                customColorsContainer.classList.toggle('hidden', !isCustom);
+                if (isCustom) {
+                    // Re-render the color pickers only when 'custom' is selected
+                    setupCustomColorPickers();
+                }
                 if (parsedCourses.length > 0) renderTimetable();
             });
 
@@ -593,75 +682,31 @@
             endTimeSelect.addEventListener('change', () => {
                 if (parsedCourses.length > 0 && customTimeToggle.checked) renderTimetable();
             });
+            
+            // --- Placeholder Logic ---
+            
+            // Set the placeholder text when the textarea is empty on page load
+            if (dataInput.value.trim() === '') {
+                dataInput.value = placeholderData.trim();
+                dataInput.classList.add('text-gray-400');
+            }
+            
+            // When the user clicks into the textarea, clear it if it's showing the placeholder
+            dataInput.addEventListener('focus', () => {
+                if (dataInput.classList.contains('text-gray-400')) {
+                    dataInput.value = '';
+                    dataInput.classList.remove('text-gray-400');
+                }
+            });
 
-            // Initial sample data for demonstration
-            dataInput.value = `
-Course Title: Imaging Anatomy | Credits: 0.0 | Credit type: Letter Grade
-10:00 - 11:50
-FRI
-Tung Wah College, King's Park Campus, KPC-907(9/F)
-REGISTERED
+            // If the user clicks away and the textarea is empty, restore the placeholder
+            dataInput.addEventListener('blur', () => {
+                if (dataInput.value.trim() === '') {
+                    dataInput.value = placeholderData.trim();
+                    dataInput.classList.add('text-gray-400');
+                }
+            });
 
-Course Title: Imaging Anatomy | Credits: 3.0 | Credit type: Letter Grade
-17:00 - 18:50
-FRI
-Tung Wah College, Mong Kok Campus, MKA-HCLT(2/F)
-REGISTERED
-
-Course Title: Radiation Physics | Credits: 3.0 | Credit type: Letter Grade
-15:00 - 16:50
-TUE
-Tung Wah College, Mong Kok Campus, MKA-801(8/F)
-REGISTERED
-
-Course Title: Radiation Physics | Credits: 0.0 | Credit type: Letter Grade
-17:00 - 17:50
-TUE
-Tung Wah College, Mong Kok Campus, MKA-801(8/F)
-REGISTERED
-
-Course Title: Medical Imaging Instrumentation | Credits: 3.0 | Credit type: Letter Grade
-18:00 - 20:50
-THU
-Tung Wah College, Mong Kok Campus, MKA-501(5/F)
-REGISTERED
-
-Course Title: Medical Imaging Instrumentation | Credits: 0.0 | Credit type: Letter Grade
-12:00 - 13:50
-WED
-Tung Wah College, King's Park Campus, KPC-1101(11/F)
-REGISTERED
-
-Course Title: General Pathology | Credits: 3.0 | Credit type: Letter Grade
-14:00 - 15:50
-FRI
-Tung Wah College, Mong Kok Campus, MKA-HCLT(2/F)
-REGISTERED
-
-Course Title: General Pathology | Credits: 0.0 | Credit type: Letter Grade
-16:00 - 16:50
-FRI
-Tung Wah College, Mong Kok Campus, MKA-801(8/F)
-REGISTERED
-
-Course Title: General Pathology | Credits: 0.0 | Credit type: Letter Grade
-14:00 - 16:50
-MON
-Tung Wah College, King's Park Campus, KPC-130506(13/F)
-REGISTERED
-
-Course Title: Introduction to Statistics | Credits: 0.0 | Credit type: Letter Grade
-15:00 - 16:50
-THU
-Tung Wah College, King's Park Campus, KPC-905(9/F)
-REGISTERED
-
-Course Title: Introduction to Statistics | Credits: 3.0 | Credit type: Letter Grade
-18:00 - 18:50
-MON
-Tung Wah College, Mong Kok Campus, MKB-201(2/F)
-REGISTERED
-        `;
         </script>
 </body>
 </html>
